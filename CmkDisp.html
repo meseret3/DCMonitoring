@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Camera Status Monitor</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #222;
+            color: #fff;
+            text-align: center;
+            padding: 20px;
+        }
+        .status-container {
+            padding: 20px;
+            margin: 20px auto;
+            width: 80%;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+        }
+        .status-ok {
+            background-color: #28a745; /* Green */
+            color: white;
+        }
+        .status-down {
+            background-color: #dc3545; /* Red */
+            color: white;
+        }
+        .camera-name {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Camera Status Monitor</h1>
+    <div id="camera-status" class="status-container status-ok">Checking camera statuses...</div>
+
+    <script>
+        function checkCameraStatus() {
+            fetch('checkmk-project/checkmk.php')
+                .then(response => response.json())
+                .then(data => {
+                    const statusDiv = document.getElementById('camera-status');
+                    if (data.down.length === 0) {
+                        statusDiv.className = "status-container status-ok";
+                        statusDiv.innerHTML = "<strong>No cameras are down</strong>";
+                    } else {
+                        statusDiv.className = "status-container status-down";
+                        let downList = data.down.map(name => `<div class="camera-name">${name}</div>`).join('');
+                        statusDiv.innerHTML = `<strong>The following cameras are down:</strong><br>${downList}`;
+                    }
+                })
+                .catch(error => {
+                    console.error("Error fetching camera status:", error);
+                });
+        }
+
+        // Check camera status every 10 seconds
+        setInterval(checkCameraStatus, 10000);
+        checkCameraStatus(); // Initial call to fetch data
+    </script>
+</body>
+</html>

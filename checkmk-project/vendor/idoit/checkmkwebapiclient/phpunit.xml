@@ -1,0 +1,28 @@
+<phpunit
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/7.0/phpunit.xsd"
+    bootstrap="./vendor/autoload.php"
+    cacheTokens="false"
+    colors="true"
+    timeoutForSmallTests="10"
+    timeoutForMediumTests="30"
+    timeoutForLargeTests="120"
+    verbose="true"
+    beStrictAboutCoversAnnotation="true">
+    <testsuites>
+        <testsuite name="Unit Tests">
+            <directory>./tests/idoit/checkmkwebapiclient/</directory>
+        </testsuite>
+    </testsuites>
+    <logging>
+        <log type="coverage-text" target="php://stdout" showUncoveredFiles="true"/>
+    </logging>
+    <filter>
+        <whitelist processUncoveredFilesFromWhitelist="true">
+            <directory suffix=".php">./src/</directory>
+        </whitelist>
+    </filter>
+    <extensions>
+        <extension class="Idoit\CheckmkWebAPIClient\Extension\PrintMetaData"/>
+    </extensions>
+</phpunit>
