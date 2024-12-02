@@ -1,0 +1,5 @@
+{
+    "require": {
+        "idoit/checkmkwebapiclient": "@DEV"
+    }
+}
