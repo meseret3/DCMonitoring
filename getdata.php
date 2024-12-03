@@ -21,11 +21,11 @@ function pingHost($host) {
 
 // Check EthioTelecom and Safaricom statuses
 $ethioStatus = pingHost("10.128.80.38");
-<<<<<<< HEAD
+
 $safaricomStatus = pingHost("10.47.3.58");
-=======
+
 $safaricomStatus = pingHost("10.46.36.26");
->>>>>>> 1613ced (Safaricom IP changed)
+
 
 // Return JSON response
 echo json_encode([
