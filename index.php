@@ -1,143 +1,146 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Data Center</title>
+    <title>Data Center Monitoring</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css">
     <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
     <style>
-       body {
-    font-family: 'Courier New', Courier, monospace;
-    background-color: #222;
-    color: #FFF;
-    padding: 20px;
-}
-
-.container {
-    display: flex;
-    justify-content: space-between; /* Space out columns evenly */
-    align-items: flex-start;       /* Align all items at the top */
-    margin: 0 auto;
-    gap: 20px;                     /* Add spacing between columns */
-}
-
-.status-container, .camera-status {
-    width: 30%;                    /* Ensure each column takes equal space */
-}
-
-.data-box, .camera-status-container {
-    margin: 10px 0;
-    padding: 20px;
-    width: 100%;
-    border-radius: 8px;
-    background-color: #333;
-    font-size: 1.5rem;
-    box-sizing: border-box;        /* Include padding in width calculation */
-}
-
-.camera-status-container {
-    padding: 15px;
-    background-color: #333;
-    color: white;
-    height: 100%;                  /* Ensure full height for alignment */
-}
-
-.status {
-    padding: 10px;
-    border-radius: 8px;
-    font-size: 1.2rem;
-    margin-top: 10px;
-}
-
-.temperature, .humidity {
-    background-color: green;
-}
-
-.status-ok {
-    background-color: #28a745;     /* Green */
-}
-
-.status-down {
-    background-color: #dc3545;     /* Red */
-}
-
-
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #1c1c1c;
+            color: #f1f1f1;
+            padding: 30px;
+        }
 
         .title {
-        text-align: center;  /* Centers text inside the div */
-        margin: 0 auto;      /* Centers the div horizontally */
-        width: 100%;         /* Ensures div spans the full width */
-    }
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        h2 {
+            font-size: 2.5rem;
+        }
+
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .status-container, .camera-status {
+            flex: 1 1 30%;
+            min-width: 300px;
+        }
+
+        .data-box, .camera-status-container {
+            margin-bottom: 20px;
+            padding: 20px;
+            border-radius: 12px;
+            background-color: #2b2b2b;
+            font-size: 1.3rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.4);
+        }
+
+        .status {
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            margin-top: 10px;
+        }
+
+        .status-ok {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .status-down {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .temperature, .humidity {
+            background-color: green;
+        }
+
+        ul {
+            padding-left: 20px;
+        }
+
+        li {
+            font-size: 1.1rem;
+        }
     </style>
 </head>
 <body>
-    <div class = "title">
-    <h2> Data Center Monitoring</h2>
+    <div class="title">
+        <h2>Data Center Monitoring</h2>
     </div>
+
     <div class="container">
-    <!-- First Column: Temperature and Humidity -->
-    <div class="status-container">
-        <div id="temperature-box" class="data-box temperature">Loading Temperature...</div>
-        <div id="humidity-box" class="data-box humidity">Loading Humidity...</div>
-    </div>
-
-    <!-- Second Column: Telecom Status -->
-    <div class="status-container">
-        <div id="ethio-container" class="data-box">
-            <h3>EthioTelecom</h3>
-            <div id="ethio-status" class="status">Checking...</div>
+        <!-- Temperature and Humidity -->
+        <div class="status-container">
+            <div id="temperature-box" class="data-box temperature">Loading Temperature...</div>
+            <div id="humidity-box" class="data-box humidity">Loading Humidity...</div>
+            <div id="server-status-box" class="data-box status-ok">
+                Loading server statuses...
+            </div>
         </div>
-        <div id="safaricom-container" class="data-box">
-            <h3>Safaricom</h3>
-            <div id="safaricom-status" class="status">Checking...</div>
-        </div>
-    </div>
 
-    <!-- Third Column: Camera Status -->
-    <div class="camera-status">
-        <div id="camera-status" class="camera-status-container status-ok">
-            <strong>No cameras are down</strong>
+        <!-- Telecom Status -->
+        <div class="status-container">
+            <div id="ethio-container" class="data-box">
+                <h4>EthioTelecom</h4>
+                <div id="ethio-status" class="status">Checking...</div>
+            </div>
+            <div id="safaricom-container" class="data-box">
+                <h4>Safaricom</h4>
+                <div id="safaricom-status" class="status">Checking...</div>
+            </div>
         </div>
-    </div>
-</div>
 
+        <!-- Camera Status -->
+        <div class="camera-status">
+            <div id="camera-status" class="camera-status-container status-ok">
+                <strong>No cameras are down</strong>
+            </div>
+        </div>
+
+        <!-- Server Status -->
+        
+    </div>
 
     <script>
-        // Fetch temperature, humidity, and telecom statuses
         function updateData() {
             $.ajax({
-                url: 'getdata.php', // Correct PHP script path
+                url: 'getdata.php',
                 type: 'GET',
                 dataType: 'json',
                 success: function(response) {
-                    // Update temperature
                     var temperature = parseFloat(response.temperature);
-                    $('#temperature-box').text('Temperature: ' + temperature + '°C');
-                    $('#temperature-box').css('background-color', temperature > 30 ? 'red' : 'green');
+                    $('#temperature-box').text('🌡️ Temperature: ' + temperature + '°C');
+                    $('#temperature-box').css('background-color', temperature > 30 ? '#dc3545' : '#28a745');
 
-                    // Update humidity
                     var humidity = parseFloat(response.humidity);
-                    $('#humidity-box').text('Humidity: ' + humidity + '%');
-                    $('#humidity-box').css('background-color', humidity > 65 ? 'red' : 'green');
+                    $('#humidity-box').text('💧 Humidity: ' + humidity + '%');
+                    $('#humidity-box').css('background-color', humidity > 65 ? '#dc3545' : '#28a745');
 
-                    // Update EthioTelecom status
                     var ethioStatus = response.EthioTelecom_Status || 'Unknown';
                     $('#ethio-status').text(ethioStatus);
-                    $('#ethio-status').css('background-color', ethioStatus === 'Online' ? 'green' : 'red');
+                    $('#ethio-status').css('background-color', ethioStatus === 'Online' ? '#28a745' : '#dc3545');
 
-                    // Update Safaricom status
                     var safaricomStatus = response.Safaricom_Status || 'Unknown';
                     $('#safaricom-status').text(safaricomStatus);
-                    $('#safaricom-status').css('background-color', safaricomStatus === 'Online' ? 'green' : 'red');
+                    $('#safaricom-status').css('background-color', safaricomStatus === 'Online' ? '#28a745' : '#dc3545');
                 },
                 error: function(xhr, status, error) {
-                    console.error('Error fetching data:', error);
+                    console.error('Error fetching sensor data:', error);
                 }
             });
         }
 
-        // Fetch camera status
         function checkCameraStatus() {
             fetch('checkmk-project/checkmk.php')
                 .then(response => response.json())
@@ -157,11 +160,41 @@
                 });
         }
 
-        // Initial calls and periodic updates
+        function checkServerStatus() {
+            fetch('server_status.php')
+                .then(response => response.json())
+                .then(data => {
+                    const box = document.getElementById('server-status-box');
+                    const servers = data.servers;
+                    const offline = servers.filter(s => !s.online);
+                    let html = '';
+
+                    if (offline.length === 0) {
+                        html = `<strong>✅ No servers are offline</strong>`;
+                        box.className = "data-box status-ok";
+                    } else {
+                        html = `<strong>⚠️ Offline Servers:</strong><ul>`;
+                        offline.forEach(s => {
+                            html += `<li>${s.name} (${s.ip})</li>`;
+                        });
+                        html += `</ul>`;
+                        box.className = "data-box status-down";
+                    }
+
+                    box.innerHTML = html;
+                })
+                .catch(error => {
+                    console.error('Error fetching server status:', error);
+                });
+        }
+
         updateData();
         checkCameraStatus();
-        setInterval(updateData, 5000); // Every 5 seconds
-        setInterval(checkCameraStatus, 10000); // Every 10 seconds
+        checkServerStatus();
+
+        setInterval(updateData, 5000);
+        setInterval(checkCameraStatus, 10000);
+        setInterval(checkServerStatus, 10000);
     </script>
 </body>
 </html>
