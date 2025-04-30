@@ -112,6 +112,17 @@
         
     </div>
 
+    <!-- Server Monitoring Section -->
+<div class="container mt-5">
+    <div class="status-container" style="width: 100%;">
+        <div id="high-utilization-box" class="data-box" style="background-color: #444;">
+            <h3>Servers Over 70% Utilization</h3>
+            <div id="high-utilization-list">Loading...</div>
+        </div>
+    </div>
+</div>
+
+
     <script>
         function updateData() {
             $.ajax({
@@ -187,14 +198,63 @@
                     console.error('Error fetching server status:', error);
                 });
         }
+        function updateHighUtilization() {
+    $.ajax({
+        url: 'zabbix_monitor.php',
+        type: 'GET',
+        dataType: 'json',
+        success: function(data) {
+            const threshold = 70;
+            const container = $('#high-utilization-list');
+            container.empty();
+
+            let found = false;
+
+            for (const serverName in data) {
+                const serverData = data[serverName];
+
+                const cpu = parseFloat(serverData["CPU Utilization"].replace('%', ''));
+                const memory = parseFloat(serverData["Memory Utilization"].replace('%', ''));
+                const disk = parseFloat(serverData["Disk Utilization"].replace('%', ''));
+
+                const overThreshold = cpu > threshold || memory > threshold || disk > threshold;
+
+                if (overThreshold) {
+                    found = true;
+                    const item = `
+                        <div style="margin-bottom: 10px;">
+                            <strong>${serverName}</strong><br>
+                            CPU: ${cpu.toFixed(1)}% | RAM: ${memory.toFixed(1)}% | Disk: ${disk.toFixed(1)}%
+                        </div>`;
+                    container.append(item);
+                }
+            }
+
+            if (!found) {
+                container.html('<div>All servers are under 70% utilization.</div>');
+            }
+        },
+        error: function(xhr, status, error) {
+            $('#high-utilization-list').html('<div>Error fetching server data.</div>');
+            console.error('Error:', error);
+        }
+    });
+}
+
+
+    // Initial call
+    //updateHighUtilization();
+
 
         updateData();
         checkCameraStatus();
         checkServerStatus();
+        updateHighUtilization();
 
         setInterval(updateData, 5000);
         setInterval(checkCameraStatus, 10000);
         setInterval(checkServerStatus, 10000);
+        setInterval(updateHighUtilization,2000)
     </script>
 </body>
 </html>
