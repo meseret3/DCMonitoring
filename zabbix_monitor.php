@@ -1,6 +1,6 @@
 <?php
 // Zabbix server configuration
-$zabbix_url = "http://10.0.50.26/zabbix/api_jsonrpc.php"; // Replace with your URL
+$zabbix_url = "http://zabbix.bia.local/zabbix/api_jsonrpc.php"; // Replace with your URL 10.0.50.26
 $username = "Admin"; // Replace with your Zabbix username
 $password = "B@gr8.1m"; // Replace with your Zabbix password
 function zabbixApiRequest($url, $method, $params, $auth = null) {

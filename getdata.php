@@ -22,9 +22,10 @@ function pingHost($host) {
 // Check EthioTelecom and Safaricom statuses
 $ethioStatus = pingHost("10.128.80.38");
 
-$safaricomStatus = pingHost("10.47.3.25");
+$safaricomStatus = pingHost("10.47.3.57");
 
-$safaricomStatus = pingHost("10.46.36.26");
+//$SwanIP= pingHost("10.47.3.57")
+//$safaricomStatus = pingHost("10.46.36.26");
 
 
 // Return JSON response
